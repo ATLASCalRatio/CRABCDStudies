@@ -36,5 +36,15 @@ namespace libABCD
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Make some signal like plots
+        /// </summary>
+        /// <param name="signalName"></param>
+        /// <param name="signal"></param>
+        public void ProcessSignal(string signalName, IQueryable<T> signal)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

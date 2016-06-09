@@ -41,7 +41,14 @@ namespace ABCDExplorer
             explorer.ProcessBackground("JnZ", backgrounds);
 
             // And a few signals
+            var signalList = CommandLineUtils.GetRequestedSignalSourceList();
+            foreach (var source in signalList)
+            {
+                var asEvents = source.Item2
+                    .AsEventStream();
 
+                explorer.ProcessSignal(source.Item1, asEvents);
+            }
 
             // And do a signal.
         }

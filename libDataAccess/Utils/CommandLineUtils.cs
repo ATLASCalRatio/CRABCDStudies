@@ -167,6 +167,18 @@ namespace libDataAccess.Utils
         }
 
         /// <summary>
+        /// Get a list of the requested data files
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<Tuple<string, IQueryable<MetaData>>> GetRequestedSignalSourceList()
+        {
+            return new Tuple<string, IQueryable<MetaData>>[]
+            {
+                Tuple.Create("600pi150lt9m", Get600pi150lt9m())
+            };
+        }
+
+        /// <summary>
         /// The max depth for BDT training
         /// </summary>
         public static int MaxBDTDepth = 3;

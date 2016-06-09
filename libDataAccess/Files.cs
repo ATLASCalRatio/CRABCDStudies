@@ -50,7 +50,7 @@ namespace libDataAccess
 
             try {
                 return GRIDJobs.FindJobFiles("DiVertAnalysis",
-                    4,
+                    5,
                     dsname,
                     nFiles: NFiles,
                     statusUpdate: l => Console.WriteLine(l),
@@ -200,13 +200,9 @@ namespace libDataAccess
             return sigEvents;
         }
 
-        public static IQueryable<recoTree> Get600pi150lt9m()
+        public static IQueryable<MetaData> Get600pi150lt9m()
         {
-            var sig = GetFileList("mc15_13TeV.304817.MadGraphPythia8EvtGen_A14NNPDF23LO_HSS_LLP_mH600_mS150_lt9m.merge.AOD.e4754_s2698_r7146_r6282");
-            var sigEvents = DiVertAnalysis.QueryablerecoTree.CreateQueriable(sig);
-            sigEvents.UseStatementOptimizer = UseCodeOptimizer;
-            sigEvents.IgnoreQueryCache = IgnoreQueires;
-            return sigEvents;
+            return GetSampleAsMetaData("mc15_13TeV.304817.MadGraphPythia8EvtGen_A14NNPDF23LO_HSS_LLP_mH600_mS150_lt9m.merge.AOD.e4754_s2698_r7146_r6282");
         }
     }
 }
