@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using libDataAccess;
 using LINQToTreeHelpers;
 using static LINQToTreeHelpers.PlottingUtils;
+using LINQToTreeHelpers.FutureUtils;
 
 namespace libABCD
 {
@@ -14,8 +15,15 @@ namespace libABCD
     /// </summary>
     public class ABCDCutExplorer<T>
     {
-        private IPlotSpec<T> jetExtraCalRPlot;
-        private IPlotSpec<T> jetExtraMaxPt;
+        /// <summary>
+        /// Variable 1 we are plotting against
+        /// </summary>
+        private IPlotSpec<T> _v1;
+
+        /// <summary>
+        /// Variable 2 we are plotting against
+        /// </summary>
+        private IPlotSpec<T> _v2;
 
         /// <summary>
         /// Create an ABCD explorer along these two axes
@@ -24,17 +32,33 @@ namespace libABCD
         /// <param name="jetExtraMaxPt"></param>
         public ABCDCutExplorer(IPlotSpec<T> jetExtraCalRPlot, IPlotSpec<T> jetExtraMaxPt)
         {
-            this.jetExtraCalRPlot = jetExtraCalRPlot;
-            this.jetExtraMaxPt = jetExtraMaxPt;
+            this._v1 = jetExtraCalRPlot;
+            this._v2 = jetExtraMaxPt;
         }
 
         /// <summary>
         /// Generate plots for a background.
         /// </summary>
         /// <param name="backgrounds"></param>
-        public void ProcessBackground(string backgroundName, IQueryable<T> backgrounds)
+        public void ProcessBackground(FutureTDirectory output, IQueryable<T> backgrounds)
         {
-            throw new NotImplementedException();
+            GenericPlots(output, backgrounds);
+        }
+
+        /// <summary>
+        /// Make the generic plots of everything
+        /// </summary>
+        /// <param name="output"></param>
+        /// <param name="backgrounds"></param>
+        private void GenericPlots(FutureTDirectory output, IQueryable<T> source)
+        {
+            // Do the 1D plots of everything
+            source
+                .Plot(_v1, "")
+                .Save(output);
+            source
+                .Plot(_v2, "")
+                .Save(output);
         }
 
         /// <summary>
@@ -44,7 +68,6 @@ namespace libABCD
         /// <param name="signal"></param>
         public void ProcessSignal(string signalName, IQueryable<T> signal)
         {
-            throw new NotImplementedException();
         }
     }
 }

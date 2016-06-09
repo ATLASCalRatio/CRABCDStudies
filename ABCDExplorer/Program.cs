@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using static libDataAccess.PlotSpecifications;
 using EventType = System.Tuple<libDataAccess.JetInfoExtra, libDataAccess.JetInfoExtra>;
 using static ABCDExplorer.EventTypePlotters;
+using LINQToTreeHelpers.FutureUtils;
 
 namespace ABCDExplorer
 {
@@ -38,19 +39,20 @@ namespace ABCDExplorer
                 .AsEventStream();
 
             // Do a background
-            explorer.ProcessBackground("JnZ", backgrounds);
-
-            // And a few signals
-            var signalList = CommandLineUtils.GetRequestedSignalSourceList();
-            foreach (var source in signalList)
+            using (var output = new FutureTFile("ABCDExplorer-SumCalR-Sum2JTrackPt.root"))
             {
-                var asEvents = source.Item2
-                    .AsEventStream();
+                explorer.ProcessBackground(output.mkdir("JnZ"), backgrounds);
 
-                explorer.ProcessSignal(source.Item1, asEvents);
+                // And a few signals
+                var signalList = CommandLineUtils.GetRequestedSignalSourceList();
+                foreach (var source in signalList)
+                {
+                    var asEvents = source.Item2
+                        .AsEventStream();
+
+                    explorer.ProcessSignal(source.Item1, asEvents);
+                }
             }
-
-            // And do a signal.
         }
     }
 }
