@@ -1,0 +1,61 @@
+﻿using DiVertAnalysis;
+using libDataAccess.Utils;
+using LINQToTreeHelpers;
+using LINQToTTreeLib;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using static System.Math;
+
+namespace libDataAccess
+{
+    public class JetInfoExtra
+    {
+        public recoTreeJets Jet;
+        public IEnumerable<recoTreeTracks> Tracks;
+        public IEnumerable<recoTreeTracks> AllTracks;
+    }
+
+    public static class JetInfoExtraHelpers
+    {
+        /// <summary>
+        /// Expression to create a jet info extra object from an event and a jet.
+        /// </summary>
+        public static Expression<Func<recoTree, recoTreeJets, JetInfoExtra>> CreateJetInfoExtra = (ev, j) => new JetInfoExtra()
+        {
+            Jet = j,
+            Tracks = ev.Tracks.Where(t => t.pT >= Constants.TrackJetAssociationMinPt && ROOTUtils.DeltaR2(j.eta, j.phi, t.eta, t.phi) < Constants.TrackJetAssociationDR2),
+            AllTracks = ev.Tracks.Where(t => t.pT >= Constants.TrackJetAssociationAllMinPt && ROOTUtils.DeltaR2(j.eta, j.phi, t.eta, t.phi) < Constants.TrackJetAssociationDR2),
+        };
+
+        /// <summary>
+        /// Build the jet info extra class from a regular event.
+        /// </summary>
+        /// <param name="background"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// TODO: Track quality cuts, not just track and pt
+        /// </remarks>
+        public static IQueryable<JetInfoExtra> BuildSuperJetInfo(IQueryable<recoTree> background)
+        {
+            return from ev in background
+                   from j in BuildSuperJetInfo(ev.Jets, ev)
+                   select j;
+        }
+
+        /// <summary>
+        /// Given a sequence of trees, generate "good" jets for use in other contexts.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="evt"></param>
+        /// <returns></returns>
+        public static IEnumerable<JetInfoExtra> BuildSuperJetInfo(this IEnumerable<recoTreeJets> source, recoTree evt)
+        {
+            return source
+                .Where(j => j.pT > 40.0 && Abs(j.eta) < 2.5)
+                .Select(j => CreateJetInfoExtra.Invoke(evt, j));
+        }
+    }
+
+}
