@@ -23,7 +23,7 @@ namespace ABCDExplorer
         public static IQueryable<EventType> AsEventStream(this IQueryable<Files.MetaData> source)
         {
             return from ev in source
-                   let jets = ev.Data.Jets
+                   let jets = ev.Data.Jets.AsQueryable()
                         .Where(j => JetInfoExtraHelpers.IsGoodJet.Invoke(j))
                         .Select(j => JetInfoExtraHelpers.CreateJetInfoExtra.Invoke(ev.Data, j))
                    where jets.Count() > 2

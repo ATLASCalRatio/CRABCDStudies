@@ -28,12 +28,12 @@ namespace libABCD
         /// <summary>
         /// Create an ABCD explorer along these two axes
         /// </summary>
-        /// <param name="jetExtraCalRPlot"></param>
-        /// <param name="jetExtraMaxPt"></param>
-        public ABCDCutExplorer(IPlotSpec<T> jetExtraCalRPlot, IPlotSpec<T> jetExtraMaxPt)
+        /// <param name="v1"></param>
+        /// <param name="v2"></param>
+        public ABCDCutExplorer(IPlotSpec<T> v1, IPlotSpec<T> v2)
         {
-            this._v1 = jetExtraCalRPlot;
-            this._v2 = jetExtraMaxPt;
+            this._v1 = v1;
+            this._v2 = v2;
         }
 
         /// <summary>

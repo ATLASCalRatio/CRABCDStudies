@@ -21,7 +21,7 @@ namespace ABCDExplorer
         public static IPlotSpec<EventType> JetEventTypeSumCalRPlot;
 
         public static IPlotSpec<double> JetRawSum2JTrackPt =
-            MakePlotterSpec<double>(50, 0.0, 10.0, j => j);
+            MakePlotterSpec<double>(50, 0.0, 10.0, j => j, "Sum2JTrackPt{0}", "Sum of track pT close to jet axis for both {0} jets.");
         public static IPlotSpec<EventType> JetEventTypeSum2JTrackPt;
 
         /// <summary>
