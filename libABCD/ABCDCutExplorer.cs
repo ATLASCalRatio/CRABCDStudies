@@ -64,10 +64,11 @@ namespace libABCD
         /// <summary>
         /// Make some signal like plots
         /// </summary>
-        /// <param name="signalName"></param>
+        /// <param name="output"></param>
         /// <param name="signal"></param>
-        public void ProcessSignal(string signalName, IQueryable<T> signal)
+        public void ProcessSignal(FutureTDirectory output, IQueryable<T> signal)
         {
+            GenericPlots(output, signal);
         }
     }
 }

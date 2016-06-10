@@ -50,7 +50,7 @@ namespace ABCDExplorer
                     var asEvents = source.Item2
                         .AsEventStream();
 
-                    explorer.ProcessSignal(source.Item1, asEvents);
+                    explorer.ProcessSignal(output.mkdir(source.Item1), asEvents);
                 }
             }
         }
