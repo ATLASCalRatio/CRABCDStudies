@@ -11,6 +11,7 @@ using static libDataAccess.PlotSpecifications;
 using EventType = System.Tuple<libDataAccess.JetInfoExtra, libDataAccess.JetInfoExtra>;
 using static ABCDExplorer.EventTypePlotters;
 using LINQToTreeHelpers.FutureUtils;
+using LINQToTTreeLib;
 
 namespace ABCDExplorer
 {
@@ -47,10 +48,15 @@ namespace ABCDExplorer
                 var signalList = CommandLineUtils.GetRequestedSignalSourceList();
                 foreach (var source in signalList)
                 {
+                    // Do everything
                     var asEvents = source.Item2
                         .AsEventStream();
-
                     explorer.ProcessSignal(output.mkdir(source.Item1), asEvents);
+
+                    // Now, look carefully at only "signal" jets
+                    var asCalSignalEvents = asEvents
+                        .Where(t => SampleUtils.IsGoodSignalJet.Invoke(t.Item1.Jet) && SampleUtils.IsGoodSignalJet.Invoke(t.Item2.Jet));
+                    explorer.ProcessSignal(output.mkdir($"{source.Item1}-CalOnly"), asCalSignalEvents);
                 }
             }
         }

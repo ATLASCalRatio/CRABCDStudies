@@ -54,10 +54,10 @@ namespace libABCD
         {
             // Do the 1D plots of everything
             source
-                .Plot(_v1, "")
+                .FuturePlot(_v1, "")
                 .Save(output);
             source
-                .Plot(_v2, "")
+                .FuturePlot(_v2, "")
                 .Save(output);
         }
 
