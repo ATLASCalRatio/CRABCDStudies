@@ -297,5 +297,41 @@ namespace libDataAccess.Utils
                     return 1;
                 });
         }
+
+        /// <summary>
+        /// Parase and return a set of options.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T ParseOptions<T>(string[] args)
+            where T : CommonOptions
+        {
+            var result = Parser.Default.ParseArguments<T>(args);
+
+            T optVar = null;
+            result.MapResult(
+                options => {
+                    Files.NFiles = options.UseFullDataset ? 0 : 1;
+                    Files.VerboseFileFetch = options.VerboseFileFetch;
+                    Files.UseCodeOptimizer = options.UseCPPOptimizer != 0;
+                    Files.IgnoreQueires = options.IgnoreQueryCache != 0;
+                    if (options.BackgroundAll) RequstedBackgroundSample = BackgroundSampleEnum.All;
+                    if (options.BackgroundJZ2) RequstedBackgroundSample = BackgroundSampleEnum.JZ2;
+                    if (options.BackgroundJZ3) RequstedBackgroundSample = BackgroundSampleEnum.JZ3;
+                    if (options.BackgroundJZ4) RequstedBackgroundSample = BackgroundSampleEnum.JZ4;
+                    optVar = options;
+                    return 0;
+                },
+                errors => {
+                    foreach (var err in errors)
+                    {
+                        Console.WriteLine($"Error parsing command line: {err.ToString()}");
+                    }
+                    return 1;
+                });
+
+            return optVar;
+        }
+
     }
 }

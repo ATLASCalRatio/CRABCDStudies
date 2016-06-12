@@ -35,6 +35,8 @@ namespace ABCDExplorer
         /// <param name="args"></param>
         static void Main(string[] args)
         {
+            Options opt = CommandLineUtils.ParseOptions<Options>(args);
+
             // Get the background along with the variables we are going to look at for each event.
             var backgrounds = CommandLineUtils.GetRequestedBackground()
                 .AsEventStream();
