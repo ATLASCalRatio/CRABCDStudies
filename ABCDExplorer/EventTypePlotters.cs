@@ -17,11 +17,11 @@ namespace ABCDExplorer
         /// Plot the sum of the CalR of two jets.
         /// </summary>
         public static IPlotSpec<double> JetRawSumCalRPlot =
-            MakePlotterSpec<double>(50, -6.0, 8.0, j => j, "SumCalR{0}", "Sum of the Log Ratios for {0} Events");
+            MakePlotterSpec<double>(50, -6.0, 8.0, j => j, "SumCalR{0}", "Sum of the Log Ratios for {0} Events; SumLogR");
         public static IPlotSpec<EventType> JetEventTypeSumCalRPlot;
 
         public static IPlotSpec<double> JetRawSum2JTrackPt =
-            MakePlotterSpec<double>(50, 0.0, 10.0, j => j, "Sum2JTrackPt{0}", "Sum of track pT close to jet axis for both {0} jets.");
+            MakePlotterSpec<double>(50, 0.0, 100.0, j => j, "Sum2JTrackPt{0}", "Sum of track pT close to jet axis for both {0} jets; Sum track pT [GeV]");
         public static IPlotSpec<EventType> JetEventTypeSum2JTrackPt;
 
         /// <summary>

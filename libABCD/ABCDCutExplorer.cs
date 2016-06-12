@@ -26,14 +26,21 @@ namespace libABCD
         private IPlotSpec<T> _v2;
 
         /// <summary>
+        /// The 2D Plot.
+        /// </summary>
+        private IPlotSpec<T> _2DPlot;
+
+        /// <summary>
         /// Create an ABCD explorer along these two axes
         /// </summary>
         /// <param name="v1"></param>
         /// <param name="v2"></param>
         public ABCDCutExplorer(IPlotSpec<T> v1, IPlotSpec<T> v2)
         {
-            this._v1 = v1;
-            this._v2 = v2;
+            _v1 = v1;
+            _v2 = v2;
+
+            _2DPlot = _v1.CombinePlotAxes(_v2);
         }
 
         /// <summary>
@@ -58,6 +65,9 @@ namespace libABCD
                 .Save(output);
             source
                 .FuturePlot(_v2, "")
+                .Save(output);
+            source
+                .FuturePlot(_2DPlot, "")
                 .Save(output);
         }
 
