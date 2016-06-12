@@ -2,7 +2,9 @@
 using LINQToTreeHelpers.FutureUtils;
 using LINQToTTreeLib;
 using System.Linq;
+using MathNet.Numerics.LinearAlgebra;
 using static LINQToTreeHelpers.PlottingUtils;
+using System;
 
 namespace libABCD
 {
@@ -43,7 +45,7 @@ namespace libABCD
         /// Generate plots for a background.
         /// </summary>
         /// <param name="backgrounds"></param>
-        public void ProcessBackground(FutureTDirectory output, IQueryable<T> backgrounds)
+        public ABCDInfo ProcessBackground(FutureTDirectory output, IQueryable<T> backgrounds)
         {
             GenericPlots(output, backgrounds);
 
@@ -58,6 +60,17 @@ namespace libABCD
             var sdS1 = backgrounds.Select(v => _v1.ValueExpressionX.Invoke(v) - av1).Select(v => v * v).FutureAggregate(0.0, (ac, v) => ac + v);
             var sdS2 = backgrounds.Select(v => _v2.ValueExpressionX.Invoke(v) - av2).Select(v => v * v).FutureAggregate(0.0, (ac, v) => ac + v);
             var sdS12 = backgrounds.Select(v => (_v1.ValueExpressionX.Invoke(v) - av1)*(_v2.ValueExpressionX.Invoke(v) - av2)).FutureAggregate(0.0, (ac, v) => ac + v);
+
+            var covar = Matrix<double>.Build.Dense(2, 2);
+            covar[0, 0] = sdS1.Value / (count.Value - 1);
+            covar[1, 1] = sdS2.Value / (count.Value - 1);
+            covar[0, 1] = sdS12.Value / (count.Value - 1);
+            covar[1, 0] = sdS12.Value / (count.Value - 1);
+
+            Console.WriteLine(covar);
+
+            // Done, return info.
+            return new ABCDInfo() { CoVar = covar };
         }
 
         /// <summary>
