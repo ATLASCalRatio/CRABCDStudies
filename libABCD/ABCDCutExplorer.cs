@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using libDataAccess;
-using LINQToTreeHelpers;
-using static LINQToTreeHelpers.PlottingUtils;
+﻿using LINQToTreeHelpers;
 using LINQToTreeHelpers.FutureUtils;
+using LINQToTTreeLib;
+using System.Linq;
+using static LINQToTreeHelpers.PlottingUtils;
 
 namespace libABCD
 {
@@ -50,6 +46,18 @@ namespace libABCD
         public void ProcessBackground(FutureTDirectory output, IQueryable<T> backgrounds)
         {
             GenericPlots(output, backgrounds);
+
+            // We have to calculate the correlation for this.
+            var count = backgrounds.FutureCount();
+            var s1 = backgrounds.Select(v => _v1.ValueExpressionX.Invoke(v)).FutureAggregate(0.0, (ac, v) => ac + v);
+            var s2 = backgrounds.Select(v => _v2.ValueExpressionX.Invoke(v)).FutureAggregate(0.0, (ac, v) => ac + v);
+
+            var av1 = s1.Value / count.Value;
+            var av2 = s2.Value / count.Value;
+
+            var sdS1 = backgrounds.Select(v => _v1.ValueExpressionX.Invoke(v) - av1).Select(v => v * v).FutureAggregate(0.0, (ac, v) => ac + v);
+            var sdS2 = backgrounds.Select(v => _v2.ValueExpressionX.Invoke(v) - av2).Select(v => v * v).FutureAggregate(0.0, (ac, v) => ac + v);
+            var sdS12 = backgrounds.Select(v => (_v1.ValueExpressionX.Invoke(v) - av1)*(_v2.ValueExpressionX.Invoke(v) - av2)).FutureAggregate(0.0, (ac, v) => ac + v);
         }
 
         /// <summary>
