@@ -24,6 +24,10 @@ namespace ABCDExplorer
             MakePlotterSpec<double>(50, 0.0, 10.0, j => j, "Sum2JTrackPt{0}", "Sum of track pT close to jet axis for both {0} jets; Sum track pT [GeV]");
         public static IPlotSpec<EventType> JetEventTypeSum2JTrackPt;
 
+        public static IPlotSpec<double> JetRawDRToTrackSum =
+            MakePlotterSpec<double>(50, 0.0, 1.0, j => j, "DRToTrackSum{0}", "Sum of DR between jet axis and first 2 GeV jet in to leading {0} jets.; Sum DR");
+        public static IPlotSpec<EventType> JetEventDRToTrackSum;
+
         /// <summary>
         /// Initialize everything we can do before.
         /// </summary>
@@ -36,6 +40,10 @@ namespace ABCDExplorer
             // Sum Track pT of the two
             JetEventTypeSum2JTrackPt = JetRawSum2JTrackPt
                 .FromType<double, EventType>(info => info.Item1.AllTracks.Select(t => t.pT).Sum() + info.Item2.AllTracks.Select(t => t.pT).Sum());
+
+            // Sum of the DR's for both trakcs.
+            JetEventDRToTrackSum = JetRawDRToTrackSum
+                .FromType<double, EventType>(info => CalcDR2GeVTrack.Invoke(info.Item1.AllTracks, info.Item1.Jet) + CalcDR2GeVTrack.Invoke(info.Item2.AllTracks, info.Item2.Jet));
         }
     }
 }

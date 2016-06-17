@@ -37,23 +37,35 @@ namespace ABCDExplorer
         {
             Options opt = CommandLineUtils.ParseOptions<Options>(args);
 
+            // Setup which pairs of variables we will look at.
+            var abcdPairs = new[]
+            {
+                Tuple.Create("SumCalR_Sum2JTrackPt", JetEventTypeSumCalRPlot, JetEventTypeSum2JTrackPt),
+                Tuple.Create("SumCalR_DRToTrackSum", JetEventTypeSumCalRPlot, JetEventDRToTrackSum),
+            };
+
             // Get the background along with the variables we are going to look at for each event.
             var backgrounds = CommandLineUtils.GetRequestedBackground()
                 .AsEventStream();
 
             // Do a background
-            using (var output = new FutureTFile("ABCDExplorer-SumCalR-Sum2JTrackPt.root"))
+            using (var output = new FutureTFile("ABCDExplorer.root"))
             {
-                // Do something like the sum of logR and the NTrack variable Something dumb...
-                var explorer = new ABCDCutExplorer<EventType>(JetEventTypeSumCalRPlot, JetEventTypeSum2JTrackPt);
+                foreach (var vPair in abcdPairs)
+                {
+                    var dir = output.mkdir(vPair.Item1);
 
-                // Do the uncorrelated version of the exploration.
-                var info = DoABCDExploration(explorer, backgrounds, output.mkdir("correlated"));
+                    // Do something like the sum of logR and the NTrack variable Something dumb...
+                    var explorer = new ABCDCutExplorer<EventType>(vPair.Item2, vPair.Item3);
 
-                // Next, get the uncorrelated version
-                var unCorVars = UncorrelateVariables(info.CoVar, JetEventTypeSumCalRPlot, JetEventTypeSum2JTrackPt);
-                var exploreUnCor = new ABCDCutExplorer<EventType>(unCorVars.Item1, unCorVars.Item2);
-                DoABCDExploration(exploreUnCor, backgrounds, output.mkdir("uncorrelated"));
+                    // Do the uncorrelated version of the exploration.
+                    var info = DoABCDExploration(explorer, backgrounds, dir.mkdir("correlated"));
+
+                    // Next, get the uncorrelated version
+                    var unCorVars = UncorrelateVariables(info.CoVar, JetEventTypeSumCalRPlot, JetEventTypeSum2JTrackPt);
+                    var exploreUnCor = new ABCDCutExplorer<EventType>(unCorVars.Item1, unCorVars.Item2);
+                    DoABCDExploration(exploreUnCor, backgrounds, dir.mkdir("uncorrelated"));
+                }
             }
         }
 
