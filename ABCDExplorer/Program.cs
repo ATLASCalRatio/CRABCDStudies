@@ -23,10 +23,10 @@ namespace ABCDExplorer
         /// <summary>
         /// Specific options for ABCDExplorer.
         /// </summary>
-        class Options : CommandLineUtils.CommonOptions
-        {
+        //class Options : CommandLineUtils.CommonOptions
+        //{
 
-        }
+        //}
 
         /// <summary>
         /// Loop through a set of ABCD methods and try to dump
@@ -35,7 +35,7 @@ namespace ABCDExplorer
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            Options opt = CommandLineUtils.ParseOptions<Options>(args);
+            //Options opt = CommandLineUtils.ParseOptions<Options>(args);
 
             // Setup which pairs of variables we will look at.
             var abcdPairs = new[]
@@ -104,7 +104,9 @@ namespace ABCDExplorer
             var info = explorer.ProcessBackground(output.mkdir("JnZ"), backgrounds);
 
             // And a few signals
-            var signalList = CommandLineUtils.GetRequestedSignalSourceList();
+            var signalList = SampleMetaData.AllSamplesWithTag("signal")
+                .Select(i => Tuple.Create(i.NickName, Files.GetSampleAsMetaData(i)));
+
             foreach (var source in signalList)
             {
                 // Do everything
